@@ -1,0 +1,626 @@
+{
+  "date": "2026-11-08",
+  "timezone": "Asia/Shanghai",
+  "baseline_commit": "92077c9ea0a00957f77e8057bee4366057b63ed6",
+  "branch": "codex/ai-review-round2",
+  "baseline_matrix": {
+    "runId": "2026-11-08T04-19-56.860Z",
+    "results": [
+      {
+        "name": "build",
+        "pass": true,
+        "exitCode": 0,
+        "seconds": 2.6,
+        "log": "build.log"
+      },
+      {
+        "name": "lint",
+        "pass": true,
+        "exitCode": 0,
+        "seconds": 3.1,
+        "log": "lint.log"
+      },
+      {
+        "name": "unit",
+        "pass": true,
+        "exitCode": 0,
+        "seconds": 0.2,
+        "log": "unit.log"
+      },
+      {
+        "name": "e2e",
+        "pass": true,
+        "exitCode": 0,
+        "seconds": 31.3,
+        "log": "e2e.log"
+      },
+      {
+        "name": "e2e-endings",
+        "pass": true,
+        "exitCode": 0,
+        "seconds": 13.1,
+        "log": "e2e-endings.log"
+      },
+      {
+        "name": "e2e-undo",
+        "pass": true,
+        "exitCode": 0,
+        "seconds": 17.5,
+        "log": "e2e-undo.log"
+      },
+      {
+        "name": "e2e-chapter-font",
+        "pass": true,
+        "exitCode": 0,
+        "seconds": 10.6,
+        "log": "e2e-chapter-font.log"
+      },
+      {
+        "name": "e2e-stage",
+        "pass": true,
+        "exitCode": 0,
+        "seconds": 32,
+        "log": "e2e-stage.log"
+      },
+      {
+        "name": "check-dist",
+        "pass": true,
+        "exitCode": 0,
+        "seconds": 8.1,
+        "log": "check-dist.log"
+      },
+      {
+        "name": "check-nameplate",
+        "pass": true,
+        "exitCode": 0,
+        "seconds": 8.6,
+        "log": "check-nameplate.log"
+      },
+      {
+        "name": "check-no-bold",
+        "pass": true,
+        "exitCode": 0,
+        "seconds": 6.8,
+        "log": "check-no-bold.log"
+      },
+      {
+        "name": "check-archive-white",
+        "pass": true,
+        "exitCode": 0,
+        "seconds": 16.1,
+        "log": "check-archive-white.log"
+      },
+      {
+        "name": "check-fonts",
+        "pass": true,
+        "exitCode": 0,
+        "seconds": 10.1,
+        "log": "check-fonts.log"
+      },
+      {
+        "name": "check-bust-white",
+        "pass": true,
+        "exitCode": 0,
+        "seconds": 1.7,
+        "log": "check-bust-white.log"
+      },
+      {
+        "name": "endings-flow",
+        "pass": true,
+        "exitCode": 0,
+        "seconds": 100.6,
+        "log": "endings-flow.log"
+      },
+      {
+        "name": "reliability",
+        "pass": true,
+        "exitCode": 0,
+        "seconds": 20.2,
+        "log": "reliability.log"
+      }
+    ]
+  },
+  "final_matrix": {
+    "runId": "2026-11-08T04-29-59.295Z",
+    "results": [
+      {
+        "name": "build",
+        "pass": true,
+        "exitCode": 0,
+        "seconds": 1.7,
+        "log": "build.log"
+      },
+      {
+        "name": "lint",
+        "pass": true,
+        "exitCode": 0,
+        "seconds": 3.2,
+        "log": "lint.log"
+      },
+      {
+        "name": "unit",
+        "pass": true,
+        "exitCode": 0,
+        "seconds": 0.4,
+        "log": "unit.log"
+      },
+      {
+        "name": "e2e",
+        "pass": true,
+        "exitCode": 0,
+        "seconds": 48.8,
+        "log": "e2e.log"
+      },
+      {
+        "name": "e2e-endings",
+        "pass": true,
+        "exitCode": 0,
+        "seconds": 19.1,
+        "log": "e2e-endings.log"
+      },
+      {
+        "name": "e2e-undo",
+        "pass": true,
+        "exitCode": 0,
+        "seconds": 22,
+        "log": "e2e-undo.log"
+      },
+      {
+        "name": "e2e-chapter-font",
+        "pass": true,
+        "exitCode": 0,
+        "seconds": 10.3,
+        "log": "e2e-chapter-font.log"
+      },
+      {
+        "name": "e2e-stage",
+        "pass": true,
+        "exitCode": 0,
+        "seconds": 30.8,
+        "log": "e2e-stage.log"
+      },
+      {
+        "name": "check-dist",
+        "pass": true,
+        "exitCode": 0,
+        "seconds": 6.5,
+        "log": "check-dist.log"
+      },
+      {
+        "name": "check-nameplate",
+        "pass": true,
+        "exitCode": 0,
+        "seconds": 8,
+        "log": "check-nameplate.log"
+      },
+      {
+        "name": "check-no-bold",
+        "pass": true,
+        "exitCode": 0,
+        "seconds": 8.1,
+        "log": "check-no-bold.log"
+      },
+      {
+        "name": "check-archive-white",
+        "pass": true,
+        "exitCode": 0,
+        "seconds": 23.7,
+        "log": "check-archive-white.log"
+      },
+      {
+        "name": "check-fonts",
+        "pass": true,
+        "exitCode": 0,
+        "seconds": 12.9,
+        "log": "check-fonts.log"
+      },
+      {
+        "name": "check-bust-white",
+        "pass": true,
+        "exitCode": 0,
+        "seconds": 2.7,
+        "log": "check-bust-white.log"
+      },
+      {
+        "name": "endings-flow",
+        "pass": true,
+        "exitCode": 0,
+        "seconds": 105.3,
+        "log": "endings-flow.log"
+      },
+      {
+        "name": "reliability",
+        "pass": true,
+        "exitCode": 0,
+        "seconds": 20,
+        "log": "reliability.log"
+      }
+    ]
+  },
+  "baseline_probes": [
+    {
+      "footer": " 自动存档已启用",
+      "savedNode": "c1_arraign",
+      "choiceVisible": true
+    },
+    {
+      "name": "auto-write-denied",
+      "errors": []
+    },
+    {
+      "home": true,
+      "saveRemains": true,
+      "toast": "印\n案件进度已重置，结局档案仍保留。"
+    },
+    {
+      "name": "reset-remove-denied",
+      "errors": []
+    },
+    {
+      "name": "malformed-ending",
+      "errors": [
+        "Cannot convert object to primitive value",
+        "Cannot convert object to primitive value"
+      ]
+    },
+    {
+      "name": "malformed-date",
+      "errors": [
+        "Cannot convert object to primitive value",
+        "Cannot convert object to primitive value",
+        "Cannot convert object to primitive value"
+      ]
+    }
+  ],
+  "supplemental_suites": {
+    "experience": {
+      "description": "Disposable browser fixture tests; not natural playthrough evidence or judging scores.",
+      "results": [
+        {
+          "name": "chapter 1 guidance and start visible at 1920x1080",
+          "pass": true,
+          "viewport": {
+            "width": 1920,
+            "height": 1080
+          },
+          "consoleErrors": []
+        },
+        {
+          "name": "chapter 2 guidance and start visible at 1920x1080",
+          "pass": true,
+          "viewport": {
+            "width": 1920,
+            "height": 1080
+          },
+          "consoleErrors": []
+        },
+        {
+          "name": "chapter 3 guidance and start visible at 1920x1080",
+          "pass": true,
+          "viewport": {
+            "width": 1920,
+            "height": 1080
+          },
+          "consoleErrors": []
+        },
+        {
+          "name": "chapter 4 guidance and start visible at 1920x1080",
+          "pass": true,
+          "viewport": {
+            "width": 1920,
+            "height": 1080
+          },
+          "consoleErrors": []
+        },
+        {
+          "name": "chapter 1 guidance and start visible at 1366x768",
+          "pass": true,
+          "viewport": {
+            "width": 1366,
+            "height": 768
+          },
+          "consoleErrors": []
+        },
+        {
+          "name": "chapter 2 guidance and start visible at 1366x768",
+          "pass": true,
+          "viewport": {
+            "width": 1366,
+            "height": 768
+          },
+          "consoleErrors": []
+        },
+        {
+          "name": "chapter 3 guidance and start visible at 1366x768",
+          "pass": true,
+          "viewport": {
+            "width": 1366,
+            "height": 768
+          },
+          "consoleErrors": []
+        },
+        {
+          "name": "chapter 4 guidance and start visible at 1366x768",
+          "pass": true,
+          "viewport": {
+            "width": 1366,
+            "height": 768
+          },
+          "consoleErrors": []
+        },
+        {
+          "name": "chapter 1 guidance and start visible at 390x844",
+          "pass": true,
+          "viewport": {
+            "width": 390,
+            "height": 844
+          },
+          "consoleErrors": []
+        },
+        {
+          "name": "chapter 2 guidance and start visible at 390x844",
+          "pass": true,
+          "viewport": {
+            "width": 390,
+            "height": 844
+          },
+          "consoleErrors": []
+        },
+        {
+          "name": "chapter 3 guidance and start visible at 390x844",
+          "pass": true,
+          "viewport": {
+            "width": 390,
+            "height": 844
+          },
+          "consoleErrors": []
+        },
+        {
+          "name": "chapter 4 guidance and start visible at 390x844",
+          "pass": true,
+          "viewport": {
+            "width": 390,
+            "height": 844
+          },
+          "consoleErrors": []
+        },
+        {
+          "name": "mobile court-end progress remains visible",
+          "pass": true,
+          "viewport": {
+            "width": 390,
+            "height": 844
+          },
+          "consoleErrors": []
+        },
+        {
+          "name": "evidence feedback follows submission, mismatch and duplicate preserve state",
+          "pass": true,
+          "viewport": {
+            "width": 1920,
+            "height": 1080
+          },
+          "consoleErrors": []
+        },
+        {
+          "name": "third-court success inquiry feedback matches choice",
+          "pass": true,
+          "viewport": {
+            "width": 1920,
+            "height": 1080
+          },
+          "consoleErrors": []
+        },
+        {
+          "name": "third-court countered inquiry feedback matches choice",
+          "pass": true,
+          "viewport": {
+            "width": 1920,
+            "height": 1080
+          },
+          "consoleErrors": []
+        },
+        {
+          "name": "verdict explanation and review: complete law",
+          "pass": true,
+          "viewport": {
+            "width": 1920,
+            "height": 1080
+          },
+          "consoleErrors": []
+        },
+        {
+          "name": "verdict explanation and review: complete defy",
+          "pass": true,
+          "viewport": {
+            "width": 1920,
+            "height": 1080
+          },
+          "consoleErrors": []
+        },
+        {
+          "name": "verdict explanation and review: complete yield",
+          "pass": true,
+          "viewport": {
+            "width": 1920,
+            "height": 1080
+          },
+          "consoleErrors": []
+        },
+        {
+          "name": "verdict explanation and review: complete defer",
+          "pass": true,
+          "viewport": {
+            "width": 1920,
+            "height": 1080
+          },
+          "consoleErrors": []
+        },
+        {
+          "name": "verdict explanation and review: missing evidence, link and inquiry",
+          "pass": true,
+          "viewport": {
+            "width": 1920,
+            "height": 1080
+          },
+          "consoleErrors": []
+        },
+        {
+          "name": "legacy ending retains its verdict and archive while explaining incomplete proof",
+          "pass": true,
+          "viewport": {
+            "width": 1920,
+            "height": 1080
+          },
+          "consoleErrors": []
+        }
+      ]
+    },
+    "storage-feedback": {
+      "results": [
+        {
+          "name": "automatic failure remains visible; manual success cannot mask it; actual automatic recovery clears it",
+          "pass": true,
+          "consoleErrors": []
+        },
+        {
+          "name": "manual write failure shows an error without corrupting successful automatic status",
+          "pass": true,
+          "consoleErrors": []
+        },
+        {
+          "name": "reset refusal preserves the current case, settings panel, and in-memory progress",
+          "pass": true,
+          "consoleErrors": []
+        },
+        {
+          "name": "ending archive refusal keeps the ending and a persistent warning, including after refresh",
+          "pass": true,
+          "consoleErrors": []
+        },
+        {
+          "name": "ending remains visible with an automatic save warning even when its archive write succeeds",
+          "pass": true,
+          "consoleErrors": []
+        },
+        {
+          "name": "malformed settings normalize safely: {\"fontSize\":{\"toString\":null},\"textSpeed\":[],\"music\":\"true\",\"autoPlay\":{}}",
+          "pass": true,
+          "consoleErrors": []
+        },
+        {
+          "name": "malformed settings normalize safely: null",
+          "pass": true,
+          "consoleErrors": []
+        },
+        {
+          "name": "malformed settings normalize safely: [\"large\",true]",
+          "pass": true,
+          "consoleErrors": []
+        },
+        {
+          "name": "invalid automatic state explicitly identifies manual fallback",
+          "pass": true,
+          "consoleErrors": []
+        },
+        {
+          "name": "invalid date input is rejected without crashing and restores the healthy manual case",
+          "pass": true,
+          "consoleErrors": []
+        }
+      ]
+    }
+  },
+  "visual": {
+    "before": {
+      "screenshots": 30,
+      "page_errors": 0,
+      "horizontal_overflows": 0
+    },
+    "after": {
+      "screenshots": 30,
+      "page_errors": 0,
+      "horizontal_overflows": 0
+    }
+  },
+  "report_screenshot_checksums": [
+    {
+      "path": "docs/audit/round2-visual/before-1366x768-final-confirm.png",
+      "sha256": "0502d17905dd1205453bc11aebcc236f83c8e8e8b6d1854ea1f32eeb41974399"
+    },
+    {
+      "path": "docs/audit/round2-visual/after-1366x768-final-confirm.png",
+      "sha256": "a109f954bdc0d61901b81c36616ef467c08d618dad3ffdbdac3399a408dc03a9"
+    },
+    {
+      "path": "docs/audit/round2-visual/before-390x844-opening.png",
+      "sha256": "19f00a4f6ef572445bfbad654f7e083a1e82cf8b101bc0b798a25ba389a0431c"
+    },
+    {
+      "path": "docs/audit/round2-visual/after-390x844-opening.png",
+      "sha256": "f37184a92db1b9588d901dbb4441b14a9ea04b1ea19152b95c7d10e0c89d3d5e"
+    },
+    {
+      "path": "docs/audit/round2-visual/before-390x844-court-end.png",
+      "sha256": "04eb61ea21524d95d6fa2011c3a6b0d4ae699184e668562d04b5568da352cd0e"
+    },
+    {
+      "path": "docs/audit/round2-visual/after-390x844-court-end.png",
+      "sha256": "a15c17f919326a5f41e2aafb9631d238467b9337d5b8eb92b36e679bba5b7e7a"
+    },
+    {
+      "path": "docs/audit/round2-visual/before-390x844-ending.png",
+      "sha256": "cfdd4f55e92c725187690784eafdb1dac957798edaed1ae0759c6dd8029c9e6e"
+    },
+    {
+      "path": "docs/audit/round2-visual/after-390x844-ending.png",
+      "sha256": "12f8da615fa719d0fec473a4a684d63f57c586854364f5ee6985ab8684178f3a"
+    },
+    {
+      "path": "docs/audit/round2-visual/before-1366x768-evidence-success.png",
+      "sha256": "9e98525237f2d2767d7b015ac53ca85361b38adc2ff89ba9850ce87b682d8990"
+    },
+    {
+      "path": "docs/audit/round2-visual/after-1366x768-evidence-success.png",
+      "sha256": "162399a1c6aca9a540dfb05752a2e79f4e0a1606228fcf536ed6cb76d7e89f01"
+    }
+  ],
+  "protected_paths_unchanged": [
+    "src/data",
+    "src/game/endings.js",
+    "public",
+    "src/assets.js",
+    "src/pages/HomePage.jsx",
+    "src/components/DialogueStage.jsx",
+    "src/components/CharacterPortrait.jsx",
+    "src/components/SpeakerPanel.jsx",
+    "src/components/IntroVideo.jsx",
+    "package-lock.json"
+  ],
+  "audit": {
+    "all": {
+      "info": 0,
+      "low": 0,
+      "moderate": 5,
+      "high": 1,
+      "critical": 0,
+      "total": 6
+    },
+    "production": {
+      "info": 0,
+      "low": 0,
+      "moderate": 0,
+      "high": 0,
+      "critical": 0,
+      "total": 0
+    }
+  },
+  "scoring": {
+    "executable_score_script_found": false,
+    "official_human_contribution": null,
+    "official_ai_contribution": null,
+    "official_total": null,
+    "reason": "No actual human or AI vote ratios; subjective report scores are not contest scores."
+  },
+  "implementation_commit": "f7b8eab989b940880d8bb5234f9b7579c8135606"
+}
