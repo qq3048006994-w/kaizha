@@ -110,6 +110,8 @@ try {
       assert.ok(await page.evaluate(id => JSON.parse(localStorage.getItem('kaizha:endings')).endings.some(entry => entry.endingId === id), scenario.ending))
       assert.equal(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1), true)
       assert.deepEqual(errors, [])
+      // Capture the finished design, rather than the first translucent animation frame.
+      await page.waitForFunction(() => getComputedStyle(document.querySelector('.ending-content')).opacity === '1')
       await page.screenshot({ path: `${outDir}/flow-${scenario.id}.png`, fullPage: true })
       results.push({ id: scenario.id, pass: true, ending: finalState.ending, courts: visited.size, restored, steps: trace.length, consoleErrors: errors, trace })
       console.log(`PASS natural flow: ${scenario.id} -> ${scenario.ending}`)

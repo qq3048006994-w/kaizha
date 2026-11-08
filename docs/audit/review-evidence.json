@@ -1,0 +1,248 @@
+{
+  "date": "2026-11-08",
+  "timezone": "Asia/Shanghai",
+  "baseline_commit": "7463fa242bde9e037301cbb599f15e3c5c822ea6",
+  "upstream_main": "97b70bcdb04571feaa0ecf1bbd51b9f12acb5b6a",
+  "implementation_commit": "659fb0ffd0a025f0c78f7f0b93e376d7354ebcad",
+  "baseline_browser_suites": [
+    {
+      "suite": "e2e",
+      "exit": 0,
+      "seconds": 35.5
+    },
+    {
+      "suite": "e2e-endings",
+      "exit": 0,
+      "seconds": 20.9
+    },
+    {
+      "suite": "e2e-undo",
+      "exit": 0,
+      "seconds": 18.6
+    },
+    {
+      "suite": "e2e-chapter-font",
+      "exit": 0,
+      "seconds": 9.8
+    },
+    {
+      "suite": "e2e-stage",
+      "exit": 0,
+      "seconds": 29.4
+    },
+    {
+      "suite": "check-dist",
+      "exit": 0,
+      "seconds": 6.8
+    },
+    {
+      "suite": "check-nameplate",
+      "exit": 0,
+      "seconds": 8.1
+    },
+    {
+      "suite": "check-no-bold",
+      "exit": 0,
+      "seconds": 7.0
+    },
+    {
+      "suite": "check-archive-white",
+      "exit": 0,
+      "seconds": 17.3
+    }
+  ],
+  "baseline_defect_probes": [
+    {
+      "name": "corrupted-court",
+      "blank": true,
+      "errors": [
+        "Cannot read properties of undefined (reading 'nodes')",
+        "Cannot read properties of undefined (reading 'nodes')",
+        "Cannot read properties of undefined (reading 'nodes')"
+      ]
+    },
+    {
+      "name": "null-evidence",
+      "blank": true,
+      "errors": [
+        "Cannot read properties of null (reading 'length')",
+        "Cannot read properties of null (reading 'length')",
+        "Cannot read properties of null (reading 'length')"
+      ]
+    },
+    {
+      "name": "new-game-old-manual",
+      "manualCourtAfterConfirm": 1,
+      "autoCourt": 0,
+      "manualCourt": 1,
+      "errors": []
+    },
+    {
+      "name": "history-target",
+      "expectedNode": "c1_marriage",
+      "actualNode": "c1_plaint",
+      "errors": []
+    },
+    {
+      "name": "typewriter-reveal",
+      "immediate": 51,
+      "later": 13,
+      "errors": []
+    },
+    {
+      "name": "autoplay-modal",
+      "modalOpen": true,
+      "actualNode": "c1_plaint",
+      "errors": []
+    }
+  ],
+  "final_matrix": {
+    "runId": "2026-11-08T04-08-06.363Z",
+    "results": [
+      {
+        "name": "build",
+        "pass": true,
+        "exitCode": 0,
+        "seconds": 2.8,
+        "log": "build.log"
+      },
+      {
+        "name": "lint",
+        "pass": true,
+        "exitCode": 0,
+        "seconds": 3,
+        "log": "lint.log"
+      },
+      {
+        "name": "unit",
+        "pass": true,
+        "exitCode": 0,
+        "seconds": 0.2,
+        "log": "unit.log"
+      },
+      {
+        "name": "e2e",
+        "pass": true,
+        "exitCode": 0,
+        "seconds": 32.8,
+        "log": "e2e.log"
+      },
+      {
+        "name": "e2e-endings",
+        "pass": true,
+        "exitCode": 0,
+        "seconds": 14.1,
+        "log": "e2e-endings.log"
+      },
+      {
+        "name": "e2e-undo",
+        "pass": true,
+        "exitCode": 0,
+        "seconds": 17.5,
+        "log": "e2e-undo.log"
+      },
+      {
+        "name": "e2e-chapter-font",
+        "pass": true,
+        "exitCode": 0,
+        "seconds": 9,
+        "log": "e2e-chapter-font.log"
+      },
+      {
+        "name": "e2e-stage",
+        "pass": true,
+        "exitCode": 0,
+        "seconds": 28.6,
+        "log": "e2e-stage.log"
+      },
+      {
+        "name": "check-dist",
+        "pass": true,
+        "exitCode": 0,
+        "seconds": 6.4,
+        "log": "check-dist.log"
+      },
+      {
+        "name": "check-nameplate",
+        "pass": true,
+        "exitCode": 0,
+        "seconds": 7.4,
+        "log": "check-nameplate.log"
+      },
+      {
+        "name": "check-no-bold",
+        "pass": true,
+        "exitCode": 0,
+        "seconds": 6.4,
+        "log": "check-no-bold.log"
+      },
+      {
+        "name": "check-archive-white",
+        "pass": true,
+        "exitCode": 0,
+        "seconds": 15.6,
+        "log": "check-archive-white.log"
+      },
+      {
+        "name": "check-fonts",
+        "pass": true,
+        "exitCode": 0,
+        "seconds": 9.8,
+        "log": "check-fonts.log"
+      },
+      {
+        "name": "check-bust-white",
+        "pass": true,
+        "exitCode": 0,
+        "seconds": 1.8,
+        "log": "check-bust-white.log"
+      },
+      {
+        "name": "endings-flow",
+        "pass": true,
+        "exitCode": 0,
+        "seconds": 82.7,
+        "log": "endings-flow.log"
+      },
+      {
+        "name": "reliability",
+        "pass": true,
+        "exitCode": 0,
+        "seconds": 17,
+        "log": "reliability.log"
+      }
+    ]
+  },
+  "verified_assertion_counts": {
+    "results.json": 27,
+    "undo-results.json": 21,
+    "chapter-font-results.json": 55,
+    "stage-results.json": 107,
+    "review/endings-flow-results.json": 7,
+    "review/reliability-results.json": 10
+  },
+  "audit_all": {
+    "info": 0,
+    "low": 0,
+    "moderate": 5,
+    "high": 1,
+    "critical": 0,
+    "total": 6
+  },
+  "audit_production": {
+    "info": 0,
+    "low": 0,
+    "moderate": 0,
+    "high": 0,
+    "critical": 0,
+    "total": 0
+  },
+  "scope": "All browser fixtures used isolated contexts; production data and visual assets unchanged. Simulation scores are not external model outputs.",
+  "supplemental_run": {
+    "command": "npm run test:endings-flow",
+    "reason": "wait for ending entrance animation before final screenshots",
+    "paths": 7,
+    "passed": true,
+    "console_errors": 0
+  }
+}
