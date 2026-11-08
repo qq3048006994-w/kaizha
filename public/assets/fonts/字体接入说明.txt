@@ -1,0 +1,61 @@
+《开铡》字体接入说明
+================================================
+当前生效字体（均随游戏离线打包，无需联网、无需本机安装）：
+
+1. 霞鹜臻楷（圆润粗楷） LXGWZhenKai-HanOnly-Level1.ttf
+   用途：人物姓名、按钮主文案、卷宗标题、结局标题等醒目位置。
+   字重：400，靠 CSS `font-synthesis: weight` 合成加粗，
+        再叠加描边（-webkit-text-stroke）与多层投影实现金色浮雕质感。
+
+2. 朱雀仿宋（方正瘦宋） ZhuqueFangsong-Regular.ttf
+   用途：正文、对话、卷宗、证物说明、按钮副文案等长文本。
+   特点：笔画纤细、字面率高，长段落阅读不疲劳；与臻楷搭配形成主副对比。
+
+3. 龙藏体（狂草枯笔） LongCang-Regular.ttf
+   用途：每一堂的章节主标题「鸣冤」「合证」「折辩」「开铡」。
+   来源：Google Fonts（github.com/google/fonts），SIL Open Font License 1.1。
+   特点：笔势狂放连绵、结体欹侧、枯笔飞白，最贴近用户提供的白色狂草参考图。
+   授权：OFL-1.1，允许商用与再分发，许可全文见 OFL-LongCang.txt。
+
+4. 志莽行书（同风格回落） ZhiMangXing-Regular.ttf
+   用途：龙藏体缺失时的同风格备选。
+   来源：Google Fonts，OFL-1.1，许可全文见 OFL-ZhiMangXing.txt。
+
+5. 方正宋刻本秀楷 / 方正清刻本悦宋（以 local() 方式声明，未安装时自动回落）
+   声明位置：src/index.css 顶部 @font-face
+   源：local("FZSongKeBenXiuKai"), local("方正宋刻本秀楷") 等
+   行为：玩家本机若已安装方正两款字体，将直接被调用；
+        未安装时该 @font-face 状态为 error（属预期），字体栈自动回落到
+        霞鹜臻楷（秀楷位）与朱雀仿宋（悦宋位），不出现豆腐块、不阻塞渲染。
+
+字体族变量（src/index.css）：
+   --font-title  标题族：方正秀楷 → 霞鹜臻楷 → 朱雀仿宋
+   --font-kai    楷体族：方正秀楷 → 霞鹜臻楷 → 朱雀仿宋
+   --font-body   正文体：方正悦宋 → 朱雀仿宋 → 霞鹜臻楷
+   --font-brush  狂草族：龙藏体 → 志莽行书 → 霞鹜臻楷 → 朱雀仿宋（章节主标题专用）
+
+章节主标题的具体做法（src/index.css）：
+   - 象牙白竖向渐变（#ffffff → #e9dfcc → #cdc1a8 → #ffffff）模拟宣纸上的枯墨浓淡；
+   - -webkit-text-stroke 1.1px 淡白描边 + 四向 0.6px 微偏移 text-shadow，
+     构成「浓墨重描」的厚重笔触，配合双层暗投影；
+   - 标题逐字独立成 span：首字 rotate(-4deg) 上浮、末字 rotate(3deg) 下沉，
+     模拟狂草连笔走势；容器 gap .1em，实测两字包围盒零交叠；
+   - font-synthesis: none，禁止合成加粗破坏草书笔势。
+
+已知限制：
+- 霞鹜臻楷 Level1 为「汉字-only」子集，缺 27 个字符（如《》。、懿、驸、刎、测等）。
+  浏览器按 --font-* 字体栈自动回退到朱雀仿宋（覆盖 0 缺字），不会出现豆腐块。
+- 龙藏体与志莽行书均仅缺 1 个字（「開」）；章节标题用字「鸣冤/合证/折辩/开铡」
+  全部命中，不受影响。
+- 用户提供的 LXGWBoldKai-HanOnly-Level2A.ttf 经 sfnt 表解析确认缺少 glyf/cmap 表
+  （仅有 BASE/FFTM/GDEF/GPOS），任何环境都无法渲染（canvas 像素签名与 sans-serif
+  完全一致，PIL 渲染为全方框），因此未纳入工程、已从本目录移除。
+  标题的「粗」由合成加粗 + 描边浮雕实现，视觉上与粗楷接近。
+- 字体授权：霞鹜臻楷、朱雀仿宋、龙藏体、志莽行书均为开源字体（宽松许可），
+  允许商用与再分发，随包分发时保留原始许可说明即可。
+
+若日后需要更换为商业字体（如方正宋刻本秀楷 / 方正清刻本悦宋）：
+1. 将授权字体文件（woff2 优先）放入本目录；
+2. 在 src/index.css 顶部 @font-face 位置加入对应 font-family；
+3. 修改 :root 的 --font-title / --font-kai / --font-body / --font-brush 字体栈；
+4. 重新执行 npm run build，字体随 dist 一并打包，网页版与桌面版均可离线使用。

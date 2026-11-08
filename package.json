@@ -1,0 +1,72 @@
+{
+  "name": "kaizha-game",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "node --test src/game/endings.test.js",
+    "test:e2e": "node scripts/e2e.mjs",
+    "test:endings": "node scripts/e2e-endings.mjs",
+    "test:undo": "node scripts/e2e-undo.mjs",
+    "test:chapter-font": "node scripts/e2e-chapter-font.mjs",
+    "test:stage": "node scripts/e2e-stage.mjs",
+    "check:nameplate": "node scripts/check-nameplate.mjs",
+    "check:archive-white": "node scripts/check-archive-white.mjs",
+    "check:bust-white": "python scripts/check_bust_white.py",
+    "check:no-bold": "node scripts/check-no-bold.mjs",
+    "check:fonts": "node scripts/check-fonts.mjs",
+    "check:dist": "node scripts/check-dist.mjs",
+    "lint": "eslint src",
+    "desktop:dev": "node scripts/desktop-dev.cjs",
+    "desktop:pack": "npm run build && electron-builder --win --dir",
+    "desktop:dist": "npm run build && electron-builder --win nsis"
+  },
+  "build": {
+    "appId": "com.kaizha.game",
+    "productName": "开铡",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "electron/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "artifactName": "开铡-Setup-${version}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "开铡"
+    }
+  },
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "eslint": "^10.14.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.7",
+    "ffmpeg-static": "^5.3.0",
+    "globals": "^17.14.0",
+    "playwright": "^1.65.0",
+    "vite": "^5.4.11"
+  }
+}

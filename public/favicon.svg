@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect x="5" y="5" width="54" height="54" fill="#14271f" stroke="#b59a62" stroke-width="3"/>
+  <rect x="10" y="10" width="44" height="44" fill="none" stroke="#9d382d" stroke-width="2"/>
+  <text x="32" y="43" text-anchor="middle" font-family="SimSun, serif" font-size="30" font-weight="700" fill="#e9dfc6">铡</text>
+</svg>
