@@ -9,15 +9,14 @@ import { courts } from './data/story.js'
 import { characters } from './data/characters.js'
 import { evaluateEnding } from './game/endings.js'
 import { autoSave, loadGame, manualSave, recordEnding, readEndingArchive, clearSave, STORAGE_KEYS } from './game/save.js'
+import { normalizeSettings } from './game/settings.js'
 import useAudio from './hooks/useAudio.js'
 
-const defaultSettings = {
-  music: false,
-  sound: true,
-  textSpeed: 'normal',
-  autoPlay: false,
-  skipRead: true,
-  fontSize: 'medium',
+function autoSaveStatus(result) {
+  return {
+    ok: result.ok,
+    message: result.ok ? '自动存档已保存' : '自动存档失败，刷新可能丢失进度',
+  }
 }
 
 function freshGame() {
@@ -63,9 +62,9 @@ function snapshotOf(state) {
 
 function loadSettings() {
   try {
-    return { ...defaultSettings, ...JSON.parse(localStorage.getItem('kaizha:settings') || '{}') }
+    return normalizeSettings(JSON.parse(localStorage.getItem('kaizha:settings') || '{}'))
   } catch {
-    return defaultSettings
+    return normalizeSettings()
   }
 }
 
@@ -80,6 +79,8 @@ export default function App() {
   const [saveProbe, setSaveProbe] = useState(0)
   const [endingCount, setEndingCount] = useState(() => readEndingArchive().endings?.length || 0)
   const [pendingNewGame, setPendingNewGame] = useState(false)
+  const [saveStatus, setSaveStatus] = useState({ ok: false, message: '尚未自动存档' })
+  const [archiveWarning, setArchiveWarning] = useState('')
   const playSound = useAudio(settings)
 
   // 「是否有存档」是派生值：直接探测 localStorage，始终与真实存储一致。
@@ -97,7 +98,13 @@ export default function App() {
 
   useEffect(() => {
     if (screen !== 'game' && screen !== 'ending') return
-    autoSave(game)
+    const status = autoSaveStatus(autoSave(game))
+    // Defer the status update so the storage effect does not cause a synchronous
+    // render cascade. Cleanup also prevents obsolete statuses after navigation.
+    const timer = window.setTimeout(() => {
+      setSaveStatus((current) => current.ok === status.ok && current.message === status.message ? current : status)
+    }, 0)
+    return () => window.clearTimeout(timer)
   }, [game, screen])
 
   useEffect(() => {
@@ -107,7 +114,7 @@ export default function App() {
   }, [toastMessage])
 
   const toast = (message) => setToastMessage(message)
-  const updateSettings = (patch) => setSettings((current) => ({ ...current, ...patch }))
+  const updateSettings = (patch) => setSettings((current) => normalizeSettings({ ...current, ...patch }))
 
   const newGame = (options = {}) => {
     // 注意：不能把 skipConfirm 作为第一个位置参数——React 的 onClick 会传入事件对象，
@@ -125,6 +132,8 @@ export default function App() {
     // Refreshing during the intro must not revive the previous case.
     const saved = autoSave(nextGame)
     const cleared = saved.ok ? clearSave('manual') : null
+    setSaveStatus(autoSaveStatus(saved))
+    setArchiveWarning('')
     setGame(nextGame)
     setModal(null)
     setLinkBoardOpen(false)
@@ -147,8 +156,10 @@ export default function App() {
       return
     }
     setGame({ ...freshGame(), ...result.state, phase: result.state.phase || 'story' })
+    const archive = result.state.ending ? readEndingArchive() : null
+    setArchiveWarning(!archive ? '' : !archive.ok ? archive.message : archive.endings.some((entry) => entry.endingId === result.state.ending) ? '' : '本次结局尚未写入结局档案，案件进度已恢复。')
     setScreen(result.state.ending ? 'ending' : 'game')
-    toast('卷宗已恢复。')
+    toast(automatic.ok ? '自动卷宗已恢复。' : '自动存档不可用，已恢复手动卷宗。')
   }
 
   const handleChoice = (choice) => {
@@ -180,7 +191,9 @@ export default function App() {
       next.finalChoice = choice.finalChoice
       next.ending = evaluateEnding(next)
       next.phase = 'ended'
-      recordEnding(next.ending)
+      const archived = recordEnding(next.ending)
+      setArchiveWarning(archived.ok ? '' : `本次结局未写入档案：${archived.message}`)
+      if (!archived.ok) toast(archived.message)
       setEndingCount(readEndingArchive().endings?.length || 0)
       setScreen('ending')
     }
@@ -258,7 +271,11 @@ export default function App() {
   }
 
   const resetGame = () => {
-    clearSave('all')
+    const result = clearSave('all')
+    if (!result.ok) {
+      toast(result.message)
+      return
+    }
     setGame(freshGame())
     setSaveProbe((n) => n + 1)
     setModal(null)
@@ -288,8 +305,8 @@ export default function App() {
     <div className="app-shell">
       {screen === 'home' && <HomePage onNewGame={newGame} onContinue={continueGame} onOpen={setModal} hasSave={hasSave} endingCount={endingCount} />}
       {screen === 'intro' && <IntroVideo onDone={() => setScreen('game')} onSkip={() => setScreen('game')} />}
-      {screen === 'game' && <GamePage game={game} onAdvance={handleAdvance} onChoice={handleChoice} onOpen={setModal} onOpenLinks={openLinks} onManualSave={saveManual} onUndo={handleUndo} settings={settings} playSound={playSound} paused={Boolean(modal || linkBoardOpen || pendingNewGame)} />}
-      {screen === 'ending' && <EndingPage game={game} onHome={() => setScreen('home')} onRestart={newGame} onArchive={() => setModal('endings')} onUndo={handleUndo} />}
+      {screen === 'game' && <GamePage game={game} onAdvance={handleAdvance} onChoice={handleChoice} onOpen={setModal} onOpenLinks={openLinks} onManualSave={saveManual} onUndo={handleUndo} settings={settings} playSound={playSound} saveStatus={saveStatus} paused={Boolean(modal || linkBoardOpen || pendingNewGame)} />}
+      {screen === 'ending' && <EndingPage game={game} onHome={() => setScreen('home')} onRestart={newGame} onArchive={() => setModal('endings')} onUndo={handleUndo} archiveWarning={archiveWarning} saveStatus={saveStatus} />}
       {modal && <ArchiveModal type={modal} onClose={() => setModal(null)} {...commonArchiveProps} />}
       {linkBoardOpen && <div className="link-board-overlay"><EvidenceLinkBoard game={game} onLink={handleLink} onClose={() => setLinkBoardOpen(false)} /></div>}
       {pendingNewGame && (

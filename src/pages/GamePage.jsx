@@ -5,8 +5,16 @@ import { evidenceById, evidenceLinks } from '../data/evidence.js'
 import Typewriter from '../components/Typewriter.jsx'
 import DialogueStage from '../components/DialogueStage.jsx'
 import SpeakerPanel from '../components/SpeakerPanel.jsx'
+import { getCaseReview } from '../game/caseReview.js'
 
-export default function GamePage({ game, onAdvance, onChoice, onOpen, onOpenLinks, onManualSave, onUndo, settings, playSound, paused = false }) {
+const courtGuidance = [
+  '先听证词，再择一法查问；「证物」可查来处，「回到上一步」可重新抉择。四堂之后，由你落判。',
+  '先调查取证，再选两至三件证物关联。判断它们共同证明什么，失败不会扣除或丢失证物。',
+  '质询须有凭据。选项会提示尚缺证物；留意对方是否被事实印证，而非只看堂上气势。',
+  '落笔前复核物证、证据关联和质询结果。依法、抗旨、移交或暂缓，各有后果。',
+]
+
+export default function GamePage({ game, onAdvance, onChoice, onOpen, onOpenLinks, onManualSave, onUndo, settings, playSound, paused = false, saveStatus = { ok: true, message: '自动存档已保存' } }) {
   const court = courts[game.courtIndex]
   const node = court.nodes.find((item) => item.id === game.nodeId) || court.nodes[0]
   const [completedTextKey, setCompletedTextKey] = useState('')
@@ -22,6 +30,13 @@ export default function GamePage({ game, onAdvance, onChoice, onOpen, onOpenLink
   const linkCount = evidenceLinks.filter((link) => game.flags.includes(link.flag)).length
   const textKey = `${game.courtIndex}-${node.id}-${game.phase}-${settings.textSpeed}`
   const textDone = completedTextKey === textKey
+  const review = getCaseReview(game, { finalChoice: confirmChoice?.finalChoice })
+  const inquiry = isResponse ? game.history.findLast((entry) => entry.text === node.text && entry.outcome) : null
+  const courtReview = game.courtIndex === 0
+    ? `名分凭据 ${['marriage_contract', 'children_registry'].filter((id) => game.evidence.includes(id)).length}/2 · 下一堂查验现场与府中物证。`
+    : game.courtIndex === 1
+      ? `核心证物 ${review.evidence.collected}/7 · 关联 ${linkCount}/3；下一堂须以所得证据质询。`
+      : `关键质询 ${review.inquiries.confirmed}/3 已印证；终审将同时核对物证、关联与质询。`
 
   useEffect(() => {
     if (paused || !textDone || !settings.autoPlay || isOpening || isCourtEnd || confirmChoice) return
@@ -60,6 +75,8 @@ export default function GamePage({ game, onAdvance, onChoice, onOpen, onOpenLink
           <i />
           <h2>{court.subtitle}</h2>
           <p>{court.opening}</p>
+          <div className="court-guidance"><b>本堂要点</b><span>{courtGuidance[game.courtIndex]}</span></div>
+          {!saveStatus.ok && <div className="chapter-save-warning" role="alert">{saveStatus.message}</div>}
           <button className="seal-cta" onClick={advance}><span>升 堂</span><small>击木开审</small></button>
         </div>
         <div className="chapter-vertical">不问贵贱 · 只问是非</div>
@@ -112,9 +129,11 @@ export default function GamePage({ game, onAdvance, onChoice, onOpen, onOpenLink
             />
           </div>
 
+          {inquiry && <p className={`inquiry-feedback ${inquiry.outcome}`} role="status">{inquiry.outcome === 'success' ? '质询已获印证 · 该项事实已记入卷宗。' : '质询未获印证 · 留意证物能证明的范围，可回退后重问。'}</p>}
+
           {isCourtEnd ? (
             <div className="court-end-panel">
-              <div><span>本堂已毕</span><strong>{court.title}</strong><p>已收证物 {game.evidence.length} 件 · 已形成证据链 {linkCount} 条</p></div>
+              <div><span>本堂已毕</span><strong>{court.title}</strong><p className="court-review">{courtReview}</p></div>
               <button className="next-button" onClick={advance}>进入下一堂 <b>→</b></button>
             </div>
           ) : isResponse || !node.choices?.length ? (
@@ -142,7 +161,7 @@ export default function GamePage({ game, onAdvance, onChoice, onOpen, onOpenLink
 
       <footer className="game-footer">
         <span>庆历年间 · 开封府</span>
-        <p><i /> 自动存档已启用</p>
+        <p role="status" data-save-state={saveStatus.ok ? 'saved' : 'error'} title={saveStatus.message}><i /> {saveStatus.message}</p>
         <button onClick={() => onUndo?.()} disabled={undoCount === 0} title="回到上一次抉择之前，重新选择">回到上一步</button>
         <button onClick={onManualSave}>手动存档</button>
       </footer>
@@ -154,6 +173,7 @@ export default function GamePage({ game, onAdvance, onChoice, onOpen, onOpenLink
             <h2>确认落笔？</h2>
             <p>{confirmChoice.label}</p>
             <small>判决将依据当前 {game.evidence.length} 件证物、{linkCount} 条证据链与堂审结果生成。</small>
+            <div className="verdict-review"><span>核心证物 {review.evidence.collected}/7 · 关联 {review.links.completed}/3 · 质询 {review.inquiries.confirmed}/3</span><p>{review.decision.explanation}</p></div>
             <div><button onClick={() => setConfirmChoice(null)}>再思片刻</button><button className="danger" onClick={() => { playSound('gavel'); onChoice(confirmChoice); setConfirmChoice(null) }}>确认宣判</button></div>
           </div>
         </div>

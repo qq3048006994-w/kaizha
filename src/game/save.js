@@ -31,6 +31,18 @@ function validSlot(slot) {
   return slot === 'auto' || slot === 'manual';
 }
 
+// Version 1 may omit dates; never coerce objects supplied by a damaged archive.
+function validDate(value) {
+  if (value == null || value === '') return true;
+  if (typeof value !== 'string' && typeof value !== 'number') return false;
+  if (typeof value === 'number' && !Number.isFinite(value)) return false;
+  return Number.isFinite(new Date(value).getTime());
+}
+
+function knownEnding(endingId) {
+  return typeof endingId === 'string' && Object.hasOwn(endingCatalog, endingId);
+}
+
 function validPosition(state) {
   if (!state || typeof state !== 'object' || Array.isArray(state)) return false;
   if (!Number.isInteger(state.courtIndex)) return false;
@@ -39,8 +51,9 @@ function validPosition(state) {
   const phase = state.phase || 'story';
   if (!['opening', 'story', 'response', 'courtEnd', 'ended'].includes(phase)) return false;
   if (phase === 'response' && state.nextNode !== null && !court.nodes.some((node) => node.id === state.nextNode)) return false;
-  if (state.ending != null && !Object.hasOwn(endingCatalog, state.ending)) return false;
+  if (state.ending != null && !knownEnding(state.ending)) return false;
   if (phase === 'ended' && !state.ending) return false;
+  if (!validDate(state.startedAt)) return false;
   for (const key of ['evidence', 'flags', 'readNodeIds']) {
     if (state[key] !== undefined && (!Array.isArray(state[key]) || state[key].some((item) => typeof item !== 'string'))) return false;
   }
@@ -164,14 +177,31 @@ export function readEndingArchive() {
 
   const parsed = parseEnvelope(raw, null);
   if (!parsed.ok) return parsed;
-  return { ok: true, endings: parsed.envelope.endings };
+  const endings = [];
+  const seen = new Set();
+  let damaged = false;
+  for (const entry of parsed.envelope.endings) {
+    if (!entry || typeof entry !== 'object' || Array.isArray(entry) ||
+        !knownEnding(entry.endingId) || !validDate(entry.unlockedAt)) {
+      damaged = true;
+      continue;
+    }
+    if (!seen.has(entry.endingId)) {
+      endings.push(entry);
+      seen.add(entry.endingId);
+    }
+  }
+  // Recover readable entries in memory only. A partial archive must not be
+  // silently rewritten by recordEnding, which could destroy evidence of damage.
+  if (damaged) return failure('corrupted', '结局档案含有损坏条目，已显示可读取的记录；原档保留，暂不覆盖。', { endings });
+  return { ok: true, endings };
 }
 
 export function recordEnding(endingId) {
   const localStorage = storage();
   if (!localStorage) return unavailable();
-  if (typeof endingId !== 'string' || !endingId) {
-    return failure('invalid-ending', '结局 id 不能为空。');
+  if (!knownEnding(endingId)) {
+    return failure('invalid-ending', '只能记录本案已有的四种结局。');
   }
 
   const archive = readEndingArchive();

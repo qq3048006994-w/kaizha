@@ -11,6 +11,7 @@
     "test:review": "node scripts/review-checks.mjs",
     "test:endings-flow": "node scripts/e2e-endings-flow.mjs",
     "test:reliability": "node scripts/e2e-reliability.mjs",
+    "test:round2": "node scripts/e2e-round2-experience.mjs && node scripts/e2e-storage-feedback.mjs",
     "test:e2e": "node scripts/e2e.mjs",
     "test:endings": "node scripts/e2e-endings.mjs",
     "test:undo": "node scripts/e2e-undo.mjs",

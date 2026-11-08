@@ -5,6 +5,7 @@ import EvidenceIcon from './EvidenceIcon.jsx'
 export default function EvidenceLinkBoard({ game, onLink, onClose }) {
   const [selected, setSelected] = useState([])
   const [feedback, setFeedback] = useState('选中两件或三件证物，推演它们能共同证明的事实。')
+  const [feedbackKind, setFeedbackKind] = useState('hint')
   const owned = evidence.filter((item) => game.evidence.includes(item.id))
   const completed = evidenceLinks.filter((link) => game.flags.includes(link.flag))
 
@@ -13,6 +14,7 @@ export default function EvidenceLinkBoard({ game, onLink, onClose }) {
       ? current.filter((item) => item !== id)
       : current.length < 3 ? [...current, id] : [...current.slice(1), id])
     setFeedback('证物已置入推演案。继续选择，或开始关联。')
+    setFeedbackKind('hint')
   }
 
   const result = useMemo(() => {
@@ -22,10 +24,12 @@ export default function EvidenceLinkBoard({ game, onLink, onClose }) {
 
   const linkEvidence = () => {
     if (selected.length < 2) {
+      setFeedbackKind('error')
       setFeedback('孤证难立。至少再选一件能够互证的证物。')
       return
     }
     if (!result) {
+      setFeedbackKind('error')
       const closest = evidenceLinks.some((link) => selected.every((id) => link.evidence.includes(id)))
       setFeedback(closest
         ? '方向相合，但仍缺一环。想想还缺哪件证物，才能让事实无须靠猜测补足。'
@@ -33,10 +37,12 @@ export default function EvidenceLinkBoard({ game, onLink, onClose }) {
       return
     }
     if (game.flags.includes(result.flag)) {
+      setFeedbackKind('hint')
       setFeedback('这条证据链已经记入卷宗，不必重复关联。')
       return
     }
     onLink(result)
+    setFeedbackKind('success')
     setFeedback(result.feedback)
     setSelected([])
   }
@@ -79,7 +85,7 @@ export default function EvidenceLinkBoard({ game, onLink, onClose }) {
         <div className="link-slots">
           {[0, 1, 2].map((index) => <span className={selected[index] ? 'filled' : ''} key={index}>{selected[index] ? evidence.find((item) => item.id === selected[index])?.name : '虚位'}</span>)}
         </div>
-        <p className={result ? 'success' : ''}>{feedback}</p>
+        <p className={feedbackKind} role="status" aria-live="polite" aria-atomic="true">{feedbackKind === 'success' ? '已印证 · ' : feedbackKind === 'error' ? '尚未成链 · ' : ''}{feedback}</p>
         <button className="seal-button" onClick={linkEvidence}>关联推演</button>
       </div>
     </section>

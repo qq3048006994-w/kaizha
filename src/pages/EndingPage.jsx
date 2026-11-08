@@ -1,11 +1,13 @@
 import { endingCatalog } from '../game/endings.js'
 import { CORE_EVIDENCE_IDS, evidenceLinks } from '../data/evidence.js'
+import { getCaseReview } from '../game/caseReview.js'
 
-export default function EndingPage({ game, onHome, onRestart, onArchive, onUndo }) {
+export default function EndingPage({ game, onHome, onRestart, onArchive, onUndo, archiveWarning = '', saveStatus = { ok: true, message: '' } }) {
   const ending = endingCatalog[game.ending] || endingCatalog.pending
   const coreCount = CORE_EVIDENCE_IDS.filter((id) => game.evidence.includes(id)).length
   const linkCount = evidenceLinks.filter((link) => game.flags.includes(link.flag)).length
   const undoCount = Array.isArray(game.undoStack) ? game.undoStack.length : 0
+  const review = getCaseReview(game)
   return (
     <main className={`ending-page ending-${ending.id}`}>
       <div className="ending-shade" />
@@ -23,6 +25,17 @@ export default function EndingPage({ game, onHome, onRestart, onArchive, onUndo 
           <div><strong>{game.insight}</strong><span>明察</span></div>
           <div><strong>{game.pressure}</strong><span>皇权压力</span></div>
         </div>
+        <p className="ending-explanation">{review.decision.endingId === game.ending ? review.decision.explanation : '本档保留原有结局，但现存判决记录与证据不足以完整复核触发条件；可展开下方卷宗逐项查看。'}</p>
+        {archiveWarning && <p className="archive-archive-warning" role="alert">{archiveWarning}</p>}
+        {!saveStatus.ok && <p className="archive-archive-warning" role="alert">{saveStatus.message}</p>}
+        <details className="case-review">
+          <summary>判词依据 · 证据回顾</summary>
+          <dl>
+            <div><dt>关键证物 {review.evidence.collected}/7</dt><dd>{review.evidence.missing.length ? `尚缺：${review.evidence.missing.map((item) => item.name).join('、')}` : '七件核心证物齐备，可逐项互证。'}</dd></div>
+            <div><dt>证据关联 {review.links.completed}/3</dt><dd>{review.links.missing.length ? `待推演：${review.links.missing.map((item) => item.title).join('、')}` : '婚配亲子、凶器差遣、忠义两难均已关联。'}</dd></div>
+            <div><dt>关键质询 {review.inquiries.confirmed}/3</dt><dd>{review.inquiries.missing.length ? `未印证：${review.inquiries.missing.map((item) => item.label).join('、')}` : '第三堂三项关键质询均已印证。'}</dd></div>
+          </dl>
+        </details>
         <div className="ending-actions">
           <button className="primary-cta compact" onClick={onRestart}><span>再审一次</span><small>探寻其他结局</small></button>
           <button className="secondary-cta" onClick={onArchive}>查看结局档案</button>

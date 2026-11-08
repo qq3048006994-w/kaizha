@@ -99,3 +99,67 @@ test('clearing game slots preserves settings and deduplicated ending records', (
   assert.equal(readEndingArchive().endings.length, 1)
   assert.equal(values.get('kaizha:settings'), '{}')
 })
+
+test('damaged ending and date objects are rejected without primitive coercion', () => {
+  for (const patch of [
+    { ending: { toString: null } },
+    { startedAt: { toString: null } },
+    { startedAt: [] },
+    { startedAt: true },
+    { startedAt: 'not a date' },
+    { startedAt: 1e20 },
+    { undoStack: [{ ...state(), startedAt: { toString: null }, historyLength: 0 }] },
+  ]) {
+    put({ ...state(), ...patch })
+    assert.equal(loadGame('auto').reason, 'corrupted', JSON.stringify(patch))
+  }
+})
+
+test('version 1 optional dates remain compatible with missing dates and numeric timestamps', () => {
+  for (const date of [undefined, null, '', '2026-11-08T00:00:00.000Z', 1794096000000]) {
+    const legacy = { ...state(), startedAt: date }
+    delete legacy.undoStack
+    put(legacy)
+    assert.equal(loadGame('auto').ok, true)
+    values.set(STORAGE_KEYS.endings, JSON.stringify({ version: 1, endings: [{ endingId: 'justice', unlockedAt: date }] }))
+    assert.equal(readEndingArchive().ok, true)
+  }
+})
+
+test('archive reads deduplicate known endings without modifying the saved source', () => {
+  const raw = JSON.stringify({ version: 1, endings: [
+    { endingId: 'justice', unlockedAt: '2026-11-08T00:00:00.000Z' },
+    { endingId: 'justice', unlockedAt: '2026-11-08T01:00:00.000Z' },
+    { endingId: 'pending' },
+  ] })
+  values.set(STORAGE_KEYS.endings, raw)
+  const archive = readEndingArchive()
+  assert.equal(archive.ok, true)
+  assert.deepEqual(archive.endings.map(entry => entry.endingId), ['justice', 'pending'])
+  assert.equal(archive.endings[0].unlockedAt, '2026-11-08T00:00:00.000Z')
+  assert.equal(values.get(STORAGE_KEYS.endings), raw)
+})
+
+test('damaged archives recover safe entries in memory and cannot be overwritten', () => {
+  for (const badEntry of [null, [], 'justice', {}, { endingId: 'made-up' },
+    { endingId: { toString: null } }, { endingId: 'justice', unlockedAt: { toString: null } },
+    { endingId: 'justice', unlockedAt: 'invalid' }]) {
+    const raw = JSON.stringify({ version: 1, endings: [badEntry, { endingId: 'pending' }, { endingId: 'pending' }] })
+    values.set(STORAGE_KEYS.endings, raw)
+    const archive = readEndingArchive()
+    assert.equal(archive.ok, false, JSON.stringify(badEntry))
+    assert.equal(archive.reason, 'corrupted')
+    assert.deepEqual(archive.endings, [{ endingId: 'pending' }])
+    assert.equal(recordEnding('justice').reason, 'corrupted')
+    assert.equal(values.get(STORAGE_KEYS.endings), raw)
+  }
+})
+
+test('recordEnding rejects IDs outside the four ending catalog entries', () => {
+  recordEnding('justice')
+  const raw = values.get(STORAGE_KEYS.endings)
+  for (const id of ['made-up', 'constructor', '__proto__', '', null, { toString: null }]) {
+    assert.equal(recordEnding(id).reason, 'invalid-ending')
+    assert.equal(values.get(STORAGE_KEYS.endings), raw)
+  }
+})

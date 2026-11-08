@@ -969,3 +969,33 @@ button.archive-evidence-card:hover, .archive-evidence-card.is-selected { border-
   .chapter-title-wrap h2 { font-size: clamp(22px, 2.6vw, 27px); }
 }
 
+/* 第二轮：仅补充操作要点、结果反馈和案卷复核，保留原视觉体系。 */
+.court-guidance { margin: -12px auto 22px; max-width: 580px; text-align: left; color: #c7bda7; font-size: 13px; line-height: 1.75; }
+.court-guidance b { margin-right: 10px; font-weight: 400; color: var(--bronze); }
+.inquiry-feedback { margin: 12px 0 0; font-size: 13px; line-height: 1.7; color: var(--cinnabar); }
+.inquiry-feedback.success { color: #3f5d44; }
+.court-end-panel .next-button { flex-shrink: 0; white-space: nowrap; }
+.link-workbench p.error { color: var(--cinnabar); }
+.game-footer p[data-save-state="error"] { color: var(--paper-light); }
+.game-footer p[data-save-state="error"] i { background: var(--cinnabar); }
+.confirm-dialog .verdict-review { display: block; margin-top: 15px; color: #756a56; font-size: 13px; line-height: 1.75; }
+.verdict-review p { margin: 8px 0 0; padding: 0; border: 0; font-size: 13px; }
+.confirm-dialog { max-height: 90svh; overflow-y: auto; }
+.ending-page { padding: 85px 0 70px; }
+.ending-explanation, .case-review { color: #c7bda7; font-size: 14px; line-height: 1.8; text-align: left; }
+.case-review { margin: 16px 0 22px; border-top: 1px solid #4b4734; border-bottom: 1px solid #4b4734; padding: 10px 0; }
+.case-review summary { cursor: pointer; color: var(--gold-mid); }
+.case-review summary:focus-visible { outline: 2px solid var(--bronze); outline-offset: 3px; }
+.chapter-save-warning { margin: -10px auto 16px; max-width: 580px; color: var(--paper-light); font-size: 13px; line-height: 1.7; }
+.case-review dt { color: var(--bronze); }
+.case-review dd { margin: 2px 0 12px; }
+.ending-content .archive-archive-warning { color: #f1e9d6; border-left: 2px solid var(--cinnabar); padding-left: 10px; font-size: 14px; line-height: 1.7; text-align: left; }
+@media (max-width: 680px) {
+  .court-guidance { margin-top: -15px; font-size: 12px; }
+  .court-end-panel p.court-review { display: block; font-size: 12px; line-height: 1.65; }
+  .game-footer p { letter-spacing: 0; font-size: 10px; }
+  .game-footer { gap: 5px; }
+  .game-footer button { white-space: nowrap; }
+  .confirm-dialog { padding: 24px; }
+}
+
