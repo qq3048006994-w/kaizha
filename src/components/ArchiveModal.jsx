@@ -414,14 +414,13 @@ function HistoryPanel({ game, onUndo }) {
                 <header>
                   <span>{entry.courtTitle || '堂审记录'}</span>
                   <strong>{entry.speaker || '旁白'}</strong>
-                  {/* 快照[i] 是第 i 次操作之前的状态，故回到第 index 条记录之前
-                      对应的快照下标是 index - 1。 */}
-                  {index > 0 && index - 1 < undoCount && (
+                  {/* Snapshot historyLength remains valid even after the 30-step stack is trimmed. */}
+                  {(game.undoStack || []).some((snapshot) => snapshot.historyLength === index) && (
                     <button
                       type="button"
                       className="archive-undo-step"
                       title="回到这一步之前，重新抉择"
-                      onClick={() => onUndo?.(index - 1)}
+                      onClick={() => onUndo?.(game.undoStack.findIndex((snapshot) => snapshot.historyLength === index))}
                     >
                       回到此处
                     </button>

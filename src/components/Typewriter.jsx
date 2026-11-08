@@ -4,6 +4,8 @@ export default function Typewriter({ text, speed = 'normal', instant = false, on
   const [visible, setVisible] = useState(instant ? text : '')
   const [done, setDone] = useState(instant)
   const completeRef = useRef(onComplete)
+  const timerRef = useRef(null)
+  const doneRef = useRef(instant)
 
   useEffect(() => {
     completeRef.current = onComplete
@@ -21,15 +23,21 @@ export default function Typewriter({ text, speed = 'normal', instant = false, on
       setVisible(text.slice(0, index))
       if (index >= text.length) {
         window.clearInterval(timer)
+        timerRef.current = null
+        doneRef.current = true
         setDone(true)
         completeRef.current?.()
       }
     }, delay)
+    timerRef.current = timer
     return () => window.clearInterval(timer)
   }, [text, speed, instant])
 
   const reveal = () => {
-    if (!done) {
+    if (!doneRef.current) {
+      window.clearInterval(timerRef.current)
+      timerRef.current = null
+      doneRef.current = true
       setVisible(text)
       setDone(true)
       completeRef.current?.()

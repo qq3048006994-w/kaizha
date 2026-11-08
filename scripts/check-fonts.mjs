@@ -1,8 +1,11 @@
 // 字体与版式验收：确认三款字体真实加载、标题族/正文族正确应用、主副标题比例达标。
 import { chromium } from 'playwright'
+import { mkdir } from 'node:fs/promises'
+import { fileURLToPath } from 'node:url'
 
 const baseUrl = process.env.KAIZHA_URL || 'http://127.0.0.1:5180'
-const outDir = 'C:/Users/Administrator/WorkBuddy/baozha/test-artifacts'
+const outDir = fileURLToPath(new URL('../test-artifacts', import.meta.url))
+await mkdir(outDir, { recursive: true })
 const browser = await chromium.launch({ headless: true, executablePath: 'C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe' })
 const page = await browser.newPage({ viewport: { width: 1600, height: 900 } })
 page.on('dialog', (dialog) => dialog.accept())

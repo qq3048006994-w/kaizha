@@ -6,7 +6,7 @@ import Typewriter from '../components/Typewriter.jsx'
 import DialogueStage from '../components/DialogueStage.jsx'
 import SpeakerPanel from '../components/SpeakerPanel.jsx'
 
-export default function GamePage({ game, onAdvance, onChoice, onOpen, onOpenLinks, onManualSave, onUndo, settings, playSound }) {
+export default function GamePage({ game, onAdvance, onChoice, onOpen, onOpenLinks, onManualSave, onUndo, settings, playSound, paused = false }) {
   const court = courts[game.courtIndex]
   const node = court.nodes.find((item) => item.id === game.nodeId) || court.nodes[0]
   const [completedTextKey, setCompletedTextKey] = useState('')
@@ -24,11 +24,11 @@ export default function GamePage({ game, onAdvance, onChoice, onOpen, onOpenLink
   const textDone = completedTextKey === textKey
 
   useEffect(() => {
-    if (!textDone || !settings.autoPlay || isOpening || isCourtEnd || confirmChoice) return
+    if (paused || !textDone || !settings.autoPlay || isOpening || isCourtEnd || confirmChoice) return
     if (!isResponse && node.choices?.length) return
     const timer = window.setTimeout(onAdvance, 1500)
     return () => window.clearTimeout(timer)
-  }, [textDone, settings.autoPlay, isResponse, isOpening, isCourtEnd, confirmChoice, node.choices?.length, onAdvance])
+  }, [paused, textDone, settings.autoPlay, isResponse, isOpening, isCourtEnd, confirmChoice, node.choices?.length, onAdvance])
 
   const proofMissing = (choice) => (choice.proof || []).filter((id) => !game.evidence.includes(id))
   const proofNames = (choice) => (choice.proof || []).map((id) => evidenceById[id]?.name).filter(Boolean).join(' + ')

@@ -120,12 +120,17 @@ export default function App() {
       return
     }
     setPendingNewGame(false)
-    setGame(freshGame())
+    const nextGame = freshGame()
+    // Commit the new automatic slot before discarding the old manual fallback.
+    // Refreshing during the intro must not revive the previous case.
+    const saved = autoSave(nextGame)
+    const cleared = saved.ok ? clearSave('manual') : null
+    setGame(nextGame)
     setModal(null)
     setLinkBoardOpen(false)
     setScreen('intro')
     playSound('gavel')
-    toast('已另立新卷宗。')
+    toast(!saved.ok ? saved.message : !cleared.ok ? cleared.message : '已另立新卷宗。')
   }
 
   const confirmNewGame = () => {
@@ -134,10 +139,11 @@ export default function App() {
   }
 
   const continueGame = () => {
-    let result = loadGame('auto')
+    const automatic = loadGame('auto')
+    let result = automatic
     if (!result.ok) result = loadGame('manual')
     if (!result.ok) {
-      toast(result.message || '没有可继续的案件。')
+      toast((result.reason === 'missing' && automatic.reason !== 'missing' ? automatic.message : result.message) || '没有可继续的案件。')
       return
     }
     setGame({ ...freshGame(), ...result.state, phase: result.state.phase || 'story' })
@@ -282,7 +288,7 @@ export default function App() {
     <div className="app-shell">
       {screen === 'home' && <HomePage onNewGame={newGame} onContinue={continueGame} onOpen={setModal} hasSave={hasSave} endingCount={endingCount} />}
       {screen === 'intro' && <IntroVideo onDone={() => setScreen('game')} onSkip={() => setScreen('game')} />}
-      {screen === 'game' && <GamePage game={game} onAdvance={handleAdvance} onChoice={handleChoice} onOpen={setModal} onOpenLinks={openLinks} onManualSave={saveManual} onUndo={handleUndo} settings={settings} playSound={playSound} />}
+      {screen === 'game' && <GamePage game={game} onAdvance={handleAdvance} onChoice={handleChoice} onOpen={setModal} onOpenLinks={openLinks} onManualSave={saveManual} onUndo={handleUndo} settings={settings} playSound={playSound} paused={Boolean(modal || linkBoardOpen || pendingNewGame)} />}
       {screen === 'ending' && <EndingPage game={game} onHome={() => setScreen('home')} onRestart={newGame} onArchive={() => setModal('endings')} onUndo={handleUndo} />}
       {modal && <ArchiveModal type={modal} onClose={() => setModal(null)} {...commonArchiveProps} />}
       {linkBoardOpen && <div className="link-board-overlay"><EvidenceLinkBoard game={game} onLink={handleLink} onClose={() => setLinkBoardOpen(false)} /></div>}

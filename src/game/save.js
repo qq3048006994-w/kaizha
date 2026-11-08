@@ -1,3 +1,7 @@
+import { courts } from '../data/story.js';
+import { evidenceById } from '../data/evidence.js';
+import { endingCatalog } from './endings.js';
+
 export const SAVE_VERSION = 1;
 
 export const STORAGE_KEYS = Object.freeze({
@@ -27,6 +31,42 @@ function validSlot(slot) {
   return slot === 'auto' || slot === 'manual';
 }
 
+function validPosition(state) {
+  if (!state || typeof state !== 'object' || Array.isArray(state)) return false;
+  if (!Number.isInteger(state.courtIndex)) return false;
+  const court = courts[state.courtIndex];
+  if (!court || !court.nodes.some((node) => node.id === state.nodeId)) return false;
+  const phase = state.phase || 'story';
+  if (!['opening', 'story', 'response', 'courtEnd', 'ended'].includes(phase)) return false;
+  if (phase === 'response' && state.nextNode !== null && !court.nodes.some((node) => node.id === state.nextNode)) return false;
+  if (state.ending != null && !Object.hasOwn(endingCatalog, state.ending)) return false;
+  if (phase === 'ended' && !state.ending) return false;
+  for (const key of ['evidence', 'flags', 'readNodeIds']) {
+    if (state[key] !== undefined && (!Array.isArray(state[key]) || state[key].some((item) => typeof item !== 'string'))) return false;
+  }
+  if (state.evidence?.some((id) => !Object.hasOwn(evidenceById, id))) return false;
+  for (const key of ['insight', 'pressure']) {
+    if (state[key] !== undefined && !Number.isFinite(state[key])) return false;
+  }
+  if (state.lastResponse !== undefined && typeof state.lastResponse !== 'string') return false;
+  return true;
+}
+
+function validState(state) {
+  if (!validPosition(state)) return false;
+  if (state.history !== undefined && (!Array.isArray(state.history) || state.history.some((entry) => {
+    if (!entry || typeof entry !== 'object' || Array.isArray(entry)) return true;
+    return ['courtTitle', 'speaker', 'text', 'choice', 'response', 'outcome'].some((key) => entry[key] != null && typeof entry[key] !== 'string');
+  }))) return false;
+  if (state.undoStack !== undefined && (!Array.isArray(state.undoStack) || state.undoStack.some((snapshot) =>
+    !validPosition(snapshot) || !Number.isInteger(snapshot.historyLength) || snapshot.historyLength < 0 ||
+    snapshot.historyLength > (state.history?.length || 0) ||
+    typeof snapshot.lastResponse !== 'string' || !Number.isFinite(snapshot.insight) || !Number.isFinite(snapshot.pressure) ||
+    !['evidence', 'flags', 'readNodeIds'].every((key) => Array.isArray(snapshot[key]))
+  ))) return false;
+  return true;
+}
+
 function parseEnvelope(raw, slot) {
   let envelope;
   try {
@@ -41,7 +81,7 @@ function parseEnvelope(raw, slot) {
   if (envelope.version !== SAVE_VERSION) {
     return failure('version', `存档版本不兼容（当前版本 ${SAVE_VERSION}），请清除旧档。`);
   }
-  if (slot && (!envelope.state || typeof envelope.state !== 'object' || Array.isArray(envelope.state))) {
+  if (slot && !validState(envelope.state)) {
     return failure('corrupted', '存档缺少有效游戏状态，无法读取。');
   }
   if (!slot && !Array.isArray(envelope.endings)) {

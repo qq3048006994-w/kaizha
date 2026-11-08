@@ -18,6 +18,8 @@ npm run build   # 产出离线可用的 dist/ 目录
 npm run preview # 预览生产构建
 ```
 
+已有 `package-lock.json` 时，建议用 `npm ci` 安装锁定版本。本次云端验收使用 Node.js 24.22.1、npm 11.9.0 和系统 Chromium。
+
 游戏不依赖任何外部服务器、在线 API 或在线图片素材，安装完成后可完全离线运行。
 
 ## 二、版本
@@ -160,7 +162,14 @@ npm run check:no-bold      # 金色浮雕标题不加粗校验
 npm run check:archive-white # 人物档案白底大图规格校验
 npm run check:bust-white    # 近景立绘抠图验收（白边残留 / 白袍破洞 / 尺寸 / 透明）
 npm run check:fonts # 全站字体族/字号/加载状态核对
+npm run test:endings-flow # 从新游戏自然通关四结局、两种失败条件及手机完整流程
+npm run test:reliability # 异常续档、备用档、回退定位、新开局、全文展开、菜单暂停和重置
+npm run test:review # 构建、lint、全部单元测试及上述已有/新增浏览器与立绘验收
 ```
+
+`test:review` 为已有 Windows 路径测试提供独立的平台适配，不修改游戏数据或测试断言。Linux 默认使用 `/usr/bin/chromium`；可用 `KAIZHA_BROWSER` 指定浏览器可执行文件，未指定且没有系统 Chromium 时使用 Playwright 管理的 Chromium（需预先安装）。Python 立绘检查需要 Pillow、NumPy 和 SciPy，可用 `KAIZHA_PYTHON` 指定解释器。请勿同时运行占用相同端口的测试。
+
+新增自然流程测试使用独立浏览器上下文，所有证物和证据链均由界面操作获得，七条路径分别覆盖依法、抗旨、移交、暂缓、缺证、质询失败及 390×844 手机通关。可靠性测试仅在独立上下文内构造边界存档，不使用或清除演示浏览器的档案。完整矩阵日志写入 `test-artifacts/review/<运行时间>/`，失败会返回非零退出码。既有 `test:endings` 仍是注入终局的页面显示检查，不能代替自然通关测试。
 
 `test:e2e` 会真实启动开发服务器，用 Chromium 跑通：首页三个档案面板 → 开始审案 → 第一堂质询 → 手动存档 → 刷新续档 → 第二堂错误关联提示与三组成功关联 → 第三堂证据质询 → 第四堂皇权压力 → 终审二次确认 → 正法昭彰结局，并在 1920×1080 / 1600×900 / 1366×768 / 1280×720 / 390×844 五种视口检查横向溢出与元素错位。截图输出在 `test-artifacts/`。
 
@@ -182,7 +191,7 @@ npm run desktop:dist      # 产出 release/开铡-Setup-1.0.0.exe
 
 ## 七、字体与授权说明
 
-全站字体已完成换血，采用**开源可商用、随包离线分发**的两款字体：
+全站采用以下三款主用开源字体，并保留志莽行书作为章节行草字体的回落；字体文件随包离线分发：
 
 | 字体族 | 文件 | 用途 | 气质 |
 | --- | --- | --- | --- |
@@ -197,7 +206,7 @@ npm run desktop:dist      # 产出 release/开铡-Setup-1.0.0.exe
 - **未采用的文件**：`LXGWBoldKai-HanOnly-Level2A.ttf` 经 sfnt 表解析确认缺少 `glyf`/`cmap` 表（仅有 BASE/FFTM/GDEF/GPOS），任何环境都无法渲染（canvas 像素签名与 sans-serif 完全一致，PIL 渲染为全方框），因此未纳入工程、已移除。标题的「粗」由 `font-synthesis: weight` 合成加粗 + 描边浮雕实现，视觉接近粗楷。
 - 若日后需要更换为商业字体（如方正宋刻本秀楷 / 方正清刻本悦宋），步骤见 `public/assets/fonts/字体接入说明.txt`：放入授权文件 → 启用 `@font-face` → 修改 `--font-*` 字体栈 → 重新 `npm run build`。
 
-字体专项验收脚本：`node scripts/check-fonts.mjs`（加载状态、主副标题族与比例）、`node scripts/measure-fonts.mjs`（canvas 像素签名，确认两款字体真实生效且互不相同）、`node scripts/e2e-chapter-font.mjs`（章节页 39 项：字体族/字号/按钮色值/无重叠截断/五档视口）。
+字体专项验收脚本：`node scripts/check-fonts.mjs`（加载状态、主副标题族与比例）、`node scripts/measure-fonts.mjs`（canvas 像素签名，确认两款字体真实生效且互不相同）、`node scripts/e2e-chapter-font.mjs`（章节页 55 项：字体族/字号/按钮色值/无重叠截断/五档视口）。
 
 ### 章节页字体规范
 
